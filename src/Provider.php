@@ -42,7 +42,6 @@ class Provider {
      */
     public function getAddressLastTransaction(string $receiver) : object
     {
-        
         if ($this->testnet) {
             $apiUrl = $this->api . 'address/' . $receiver . '/txs';
         } else {
@@ -50,6 +49,13 @@ class Provider {
         }
 
         $data = json_decode(file_get_contents($apiUrl));
+
+        if (!$data) {
+            return (object) [
+                "hash" => null,
+                "amount" => 0
+            ];
+        }
 
         if (isset($data->txs)) {
 
