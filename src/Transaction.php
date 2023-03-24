@@ -134,17 +134,16 @@ class Transaction {
     }
 
     /**
-     * @param string receiver 
-     * @param float $amount 
+     * @param object $config
      * @return bool
      */
-    public function verifyTransferWithData(string $receiver, float $amount) : bool
+    public function verifyTransferWithData(object $config) : bool
     {
         if ($this->validate()) {
 
             if ($this->provider->testnet) {
 
-                $index = array_search($receiver, array_column($this->data->vout, 'scriptpubkey_address'));
+                $index = array_search($config->receiver, array_column($this->data->vout, 'scriptpubkey_address'));
 
                 $data = $this->data->vout[$index];
                 
@@ -154,7 +153,7 @@ class Transaction {
                 ];
             } else {
                 
-                $index = array_search($receiver, array_column($this->data->out, 'addr'));
+                $index = array_search($config->receiver, array_column($this->data->out, 'addr'));
 
                 $data = $this->data->out[$index];
 
@@ -164,7 +163,7 @@ class Transaction {
                 ];
             }
 
-            if ($data->receiver == $receiver && $data->amount == $amount) {
+            if ($data->receiver == $config->receiver && $data->amount == $config->amount) {
                 return true;
             } else {
                 return false;
