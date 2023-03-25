@@ -28,9 +28,8 @@ class Transaction {
      */
     public function __construct(string $hash, Provider $provider) 
     {
-        $this->provider = $provider;
         $this->hash = $hash;
-        $this->getData();
+        $this->provider = $provider;
     }
 
     /**
