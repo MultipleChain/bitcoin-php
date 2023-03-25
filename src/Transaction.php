@@ -99,36 +99,40 @@ class Transaction {
     }
 
     /**
+     * @return ?bool
+     */
+    public function getStatus() : ?bool
+    {
+        $result = null;
+
+        if ($this->data == null) {
+            $result = false;
+        } else {
+            if ($this->provider->testnet) {
+                if (isset($this->data->status->block_height) && $this->data->status->block_height) {
+                    $result = true;
+                }
+            } else {
+                if (isset($this->data->block_height) && $this->data->block_height) {
+                    $result = true;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * @return bool
      */
     public function validate() : bool
     {
-        try {
+        $result = $this->getStatus();
 
-            $result = null;
-
-            if ($this->data == null) {
-                $result = false;
-            } else {
-                if ($this->provider->testnet) {
-                    if (isset($this->data->status->block_height)) {
-                        $result = true;
-                    }
-                } else {
-                    if ($this->data->block_height) {
-                        $result = true;
-                    }
-                }
-            }
-
-            if (is_bool($result)) {
-                return $result;
-            } else {
-                return $this->validate();
-            }
-
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+        if (is_bool($result)) {
+            return $result;
+        } else {
+            return $this->validate();
         }
     }
 
