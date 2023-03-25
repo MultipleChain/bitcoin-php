@@ -30,6 +30,11 @@ class Transaction {
     {
         $this->hash = $hash;
         $this->provider = $provider;
+        try {
+            $this->getData();
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
     }
 
     /**
@@ -46,16 +51,13 @@ class Transaction {
     public function getData() : object 
     {
         try {
-
             if ($this->provider->testnet) {
                 $txApi = $this->provider->api . 'tx/' . $this->hash;
             } else {
                 $txApi = $this->provider->api . 'rawtx/' . $this->hash;
             }
             
-            if (!$this->data) {
-                $this->data = json_decode(file_get_contents($txApi));
-            }
+            $this->data = json_decode(file_get_contents($txApi));
         } catch (\Exception $e) {
             throw new \Exception('There was a problem retrieving transaction data!');
         }
@@ -102,8 +104,6 @@ class Transaction {
     public function validate() : bool
     {
         try {
-
-            $this->getData();
 
             $result = null;
 
