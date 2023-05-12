@@ -30,11 +30,6 @@ class Transaction {
     {
         $this->hash = $hash;
         $this->provider = $provider;
-        try {
-            $this->getData();
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
-        }
     }
 
     /**
@@ -51,12 +46,7 @@ class Transaction {
     public function getData() : object 
     {
         try {
-            if ($this->provider->testnet) {
-                $txApi = $this->provider->api . 'tx/' . $this->hash;
-            } else {
-                $txApi = $this->provider->api . 'rawtx/' . $this->hash;
-            }
-            
+            $txApi = $this->provider->api . 'tx/' . $this->hash;
             $this->data = json_decode(file_get_contents($txApi));
         } catch (\Exception $e) {
             throw new \Exception('There was a problem retrieving transaction data!');
@@ -72,26 +62,17 @@ class Transaction {
     {
         try {
 
-            if ($this->provider->testnet) {
-                $blockApi = $this->provider->api . 'blocks/tip/height';
-            } else {
-                $blockApi = $this->provider->api . 'latestblock';
-            }
-
+            $blockApi = $this->provider->api . 'blocks/tip/height';
             $latestBlock = json_decode(file_get_contents($blockApi));
 
             if (is_object($latestBlock)) {
                 $latestBlock = $latestBlock->height;
             }
 
-            if ($this->provider->testnet) {
-                if (isset($this->data->status->block_height)) {
-                    $blockHeight = $this->data->status->block_height;
-                } else {
-                    return 0;
-                }
+            if (isset($this->data->status->block_height)) {
+                $blockHeight = $this->data->status->block_height;
             } else {
-                $blockHeight = $this->data->block_height;
+                return 0;
             }
 
             return (($latestBlock - $blockHeight) + 1);
@@ -108,14 +89,8 @@ class Transaction {
         if ($this->data == null) {
             $result = false;
         } else {
-            if ($this->provider->testnet) {
-                if (isset($this->data->status->block_height) && $this->data->status->block_height) {
-                    $result = true;
-                }
-            } else {
-                if (isset($this->data->block_height) && $this->data->block_height) {
-                    $result = true;
-                }
+            if (isset($this->data->status->block_height) && $this->data->status->block_height) {
+                $result = true;
             }
         }
 
@@ -144,27 +119,15 @@ class Transaction {
     {
         if ($this->validate()) {
 
-            if ($this->provider->testnet) {
+            
+            $index = array_search($config->receiver, array_column($this->data->vout, 'scriptpubkey_address'));
 
-                $index = array_search($config->receiver, array_column($this->data->vout, 'scriptpubkey_address'));
-
-                $data = $this->data->vout[$index];
-                
-                $data = (object) [
-                    "receiver" => $data->scriptpubkey_address,
-                    "amount" => Utils::toDec($data->value, 8)
-                ];
-            } else {
-                
-                $index = array_search($config->receiver, array_column($this->data->out, 'addr'));
-
-                $data = $this->data->out[$index];
-
-                $data = (object) [
-                    "receiver" => $data->addr,
-                    "amount" => Utils::toDec($data->value, 8)
-                ];
-            }
+            $data = $this->data->vout[$index];
+            
+            $data = (object) [
+                "receiver" => $data->scriptpubkey_address,
+                "amount" => Utils::toDec($data->value, 8)
+            ];
 
             if ($data->receiver == $config->receiver && $data->amount == $config->amount) {
                 return true;
@@ -180,10 +143,6 @@ class Transaction {
      * @return string
      */
     public function getUrl() {
-        if ($this->provider->testnet) {
-            return $this->provider->explorer . 'tx/' . $this->hash;
-        } else {
-            return $this->provider->explorer . 'transactions/btc/' . $this->hash;
-        }
+        return $this->provider->explorer . 'tx/' . $this->hash;
     }
 }

@@ -22,14 +22,20 @@ class Provider {
     public $testnet;
 
     /**
+     * @var string
+     */
+    public $network;
+
+    /**
      * @param bool $testnet
      */
     public function __construct(bool $testnet = false) {
         $this->testnet = $testnet;
+        $this->network = $testnet ? 'testnet' : 'livenet';
 
         if (!$this->testnet) {
-            $this->api = "https://blockchain.info/";
-            $this->explorer = "https://www.blockchain.com/explorer/";
+            $this->api = "https://blockstream.info/api/";
+            $this->explorer = "https://blockstream.info/";
         } else {
             $this->api = "https://blockstream.info/testnet/api/";
             $this->explorer = "https://blockstream.info/testnet/";
@@ -42,12 +48,7 @@ class Provider {
      */
     public function getAddressLastTransaction(string $receiver) : object
     {
-        if ($this->testnet) {
-            $apiUrl = $this->api . 'address/' . $receiver . '/txs';
-        } else {
-            $apiUrl = $this->api . 'rawaddr/' . $receiver;
-        }
-
+        $apiUrl = $this->api . 'address/' . $receiver . '/txs';
         $data = json_decode(file_get_contents($apiUrl));
 
         if (!$data) {
@@ -56,32 +57,17 @@ class Provider {
                 "amount" => 0
             ];
         }
-
-        if (isset($data->txs)) {
-
-            $tx = $data->txs[0];
-
-            $index = array_search($receiver, array_column($tx->out, 'addr'));
-
-            $data = $tx->out[$index];
             
-            return (object) [
-                "hash" => $tx->hash,
-                "amount" => Utils::toDec($data->value, 8)
-            ];
-        } else {
-            
-            $tx = $data[0];
+        $tx = $data[0];
 
-            $index = array_search($receiver, array_column($tx->out, 'scriptpubkey_address'));
+        $index = array_search($receiver, array_column($tx->out, 'scriptpubkey_address'));
 
-            $data = $tx->vout[$index];
+        $data = $tx->vout[$index];
 
-            return (object) [
-                "hash" => $tx->txid,
-                "amount" => Utils::toDec($data->value, 8)
-            ];
-        }
+        return (object) [
+            "hash" => $tx->txid,
+            "amount" => Utils::toDec($data->value, 8)
+        ];
     }
 
     /**

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "da55c24e752e28e93d0b82e10cbbcbf9",
+    "content-hash": "ca83b6b0953b885e4439fbac80023a57",
     "packages": [
         {
             "name": "multiplechain/utils",
@@ -12,17 +12,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/MultipleChain/utils-php.git",
-                "reference": "d1791eaf9397cfd440d6b97998a4061db1391493"
+                "reference": "b58832b0b412e310c357944ba98d55c99677e5ee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MultipleChain/utils-php/zipball/d1791eaf9397cfd440d6b97998a4061db1391493",
-                "reference": "d1791eaf9397cfd440d6b97998a4061db1391493",
+                "url": "https://api.github.com/repos/MultipleChain/utils-php/zipball/b58832b0b412e310c357944ba98d55c99677e5ee",
+                "reference": "b58832b0b412e310c357944ba98d55c99677e5ee",
                 "shasum": ""
             },
             "require": {
                 "ext-mbstring": "*",
-                "php": ">=8.2",
+                "php": ">=7.4",
                 "phpseclib/phpseclib": "~2.0.11"
             },
             "type": "library",
@@ -41,7 +41,7 @@
                 "issues": "https://github.com/MultipleChain/utils-php/issues",
                 "source": "https://github.com/MultipleChain/utils-php/tree/0.1.0"
             },
-            "time": "2023-03-19T15:43:44+00:00"
+            "time": "2023-03-22T08:30:14+00:00"
         },
         {
             "name": "phpseclib/phpseclib",
@@ -161,7 +161,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=8.2",
+        "php": ">=7.4",
         "ext-mbstring": "*"
     },
     "platform-dev": [],
