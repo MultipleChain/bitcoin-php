@@ -62,6 +62,7 @@ class Transaction {
     {
         try {
 
+            $this->getData();
             $blockApi = $this->provider->api . 'blocks/tip/height';
             $latestBlock = json_decode(file_get_contents($blockApi));
 
@@ -84,6 +85,7 @@ class Transaction {
      */
     public function getStatus() : ?bool
     {
+        $this->getData();
         $result = null;
 
         if ($this->data == null) {
