@@ -46,7 +46,7 @@ class Provider {
      * @param string $receiver
      * @return object
      */
-    public function getAddressLastTransaction(string $receiver) : object
+    public function getLastTransactionByReceiver(string $receiver) : object
     {
         $apiUrl = $this->api . 'address/' . $receiver . '/txs';
         $data = json_decode(file_get_contents($apiUrl));

@@ -81,9 +81,9 @@ class Transaction {
     }
 
     /**
-     * @return ?bool
+     * @return bool
      */
-    public function getStatus() : ?bool
+    public function validate() : bool
     {
         $this->getData();
         $result = null;
@@ -97,20 +97,6 @@ class Transaction {
         }
 
         return $result;
-    }
-
-    /**
-     * @return bool
-     */
-    public function validate() : bool
-    {
-        $result = $this->getStatus();
-
-        if (is_bool($result)) {
-            return $result;
-        } else {
-            return $this->validate();
-        }
     }
 
     /**
