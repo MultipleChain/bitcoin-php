@@ -27,11 +27,13 @@ class Provider {
     public $network;
 
     /**
-     * @param bool $testnet
+     * @param array|object $options
      */
-    public function __construct(bool $testnet = false) {
-        $this->testnet = $testnet;
-        $this->network = $testnet ? 'testnet' : 'livenet';
+    public function __construct($options) {
+        
+        $options = is_array($options) ? (object) $options : $options;
+        $this->testnet = isset($options->testnet) ? $options->testnet : false;
+        $this->network = $this->testnet ? 'testnet' : 'livenet';
 
         if (!$this->testnet) {
             $this->api = "https://blockstream.info/api/";
@@ -40,34 +42,6 @@ class Provider {
             $this->api = "https://blockstream.info/testnet/api/";
             $this->explorer = "https://blockstream.info/testnet/";
         }
-    }
-
-    /**
-     * @param string $receiver
-     * @return object
-     */
-    public function getLastTransactionByReceiver(string $receiver) : object
-    {
-        $apiUrl = $this->api . 'address/' . $receiver . '/txs';
-        $data = json_decode(file_get_contents($apiUrl));
-
-        if (!$data) {
-            return (object) [
-                "hash" => null,
-                "amount" => 0
-            ];
-        }
-            
-        $tx = $data[0];
-
-        $index = array_search($receiver, array_column($tx->out, 'scriptpubkey_address'));
-
-        $data = $tx->vout[$index];
-
-        return (object) [
-            "hash" => $tx->txid,
-            "amount" => Utils::toDec($data->value, 8)
-        ];
     }
 
     /**
