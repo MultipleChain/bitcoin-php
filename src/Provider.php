@@ -3,6 +3,7 @@
 namespace MultipleChain\Bitcoin;
 
 use MultipleChain\Utils;
+use BeycanPress\Http\Client;
 
 class Provider {
 
@@ -27,10 +28,16 @@ class Provider {
     public $network;
 
     /**
+     * @var Client
+     */
+    public $client;
+
+    /**
      * @param array|object $options
      */
-    public function __construct($options) {
-        
+    public function __construct($options) 
+    {
+        $this->client = new Client();
         $options = is_array($options) ? (object) $options : $options;
         $this->testnet = isset($options->testnet) ? $options->testnet : false;
         $this->network = $this->testnet ? 'testnet' : 'livenet';

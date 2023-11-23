@@ -47,7 +47,7 @@ class Transaction {
     {
         try {
             $txApi = $this->provider->api . 'tx/' . $this->hash;
-            $this->data = json_decode(file_get_contents($txApi));
+            $this->data = $this->provider->client->get($txApi);
         } catch (\Exception $e) {
             throw new \Exception('There was a problem retrieving transaction data!');
         }
@@ -64,7 +64,7 @@ class Transaction {
 
             $this->getData();
             $blockApi = $this->provider->api . 'blocks/tip/height';
-            $latestBlock = json_decode(file_get_contents($blockApi));
+            $latestBlock = $this->provider->client->get($blockApi);
 
             if (is_object($latestBlock)) {
                 $latestBlock = $latestBlock->height;
