@@ -88,12 +88,8 @@ class Transaction {
         $this->getData();
         $result = null;
 
-        if ($this->data == null) {
-            $result = false;
-        } else {
-            if (isset($this->data->status->block_height) && $this->data->status->block_height) {
-                $result = true;
-            }
+        if ($this->data && isset($this->data->status->block_height) && $this->data->status->block_height) {
+            $result = true;
         }
 
         return $result;
