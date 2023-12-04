@@ -55,6 +55,18 @@ class Transaction {
         return $this->data;
     }
 
+    public function getFrom() : string 
+    {
+        try {
+            $this->getData();
+            $from = $this->data->vin[0]->prevout->scriptpubkey_address;
+        } catch (\Exception $e) {
+            $from = '';
+        }
+
+        return $from;
+    }
+
     /** 
      * @return int
      */
